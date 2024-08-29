@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """  0. Regex-ing """
+import os
 from typing import List, Tuple
 import re
 import logging
 import csv
+import mysql.connector
 
 
 PII_FIELDS: Tuple[str] = ('name', 'email', 'phone', 'ssn', 'password')
@@ -72,3 +74,14 @@ def get_logger() -> logging.Logger:
     logger.addHandler(handler)
 
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """ connect to a mysql database """
+    connector = mysql.connector.connect(
+        host=os.getenv('PERSONAL_DATA_DB_HOST'),
+        database=os.getenv('PERSONAL_DATA_DB_NAME'),
+        user=os.getenv('PERSONAL_DATA_DB_USERNAME'),
+        password=os.getenv('PERSONAL_DATA_DB_PASSWORD')
+    )
+    return connector
