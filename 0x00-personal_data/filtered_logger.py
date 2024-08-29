@@ -57,7 +57,17 @@ class RedactingFormatter(logging.Formatter):
         super(RedactingFormatter, self).__init__(self.FORMAT)
 
     def format(self, record: logging.LogRecord) -> str:
-        """Formats the LogRecord, filtering sensitive fields."""
+        """Formats the LogRecord, filtering sensitive fields
+
+            Args:
+                record (logging.LogRecord):
+                    The log record containing the message
+                        and metadata about the log event.
+
+            Returns:
+                str: The formatted log message with sensitive fields redacted.
+        """
+
         record.msg = filter_datum(
                 self.fields, self.REDACTION,
                 record.getMessage(), self.SEPARATOR
@@ -66,7 +76,15 @@ class RedactingFormatter(logging.Formatter):
 
 
 def get_logger() -> logging.Logger:
-    """ returns a logging.Logger object."""
+    """Creates and returns a logging.Logger
+        object configured to handle sensitive user data.
+
+        Returns:
+            logging.Logger:
+                A configured logger
+                    instance for handling user data logs.
+    """
+
     logger = logging.getLoager("user_data")
     logger.setLevel(logging.INFO)
     logger.propagate = False
@@ -78,7 +96,13 @@ def get_logger() -> logging.Logger:
 
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
-    """ connect to a mysql database """
+    """ Establishes a connection to a MySQL database using
+        credentials from environment variables.
+
+        Returns:
+            mysql.connector.connection.MySQLConnection:
+                A connection object to interact with the database.
+    """
     connector = mysql.connector.connect(
         host=os.getenv('PERSONAL_DATA_DB_HOST'),
         database=os.getenv('PERSONAL_DATA_DB_NAME'),
@@ -89,7 +113,8 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
 
 def main():
-    """ """
+    """Retrieves and logs user data from a MySQL database.
+    """
     get_db = get_db()
     logger = get_logger()
 
