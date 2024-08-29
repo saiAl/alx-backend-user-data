@@ -2,6 +2,7 @@
 """  0. Regex-ing """
 from typing import List
 import re
+import logging
 
 
 def filter_datum(
@@ -36,3 +37,28 @@ def filter_datum(
                 list_of_strings.insert(idx, target)
 
     return f'{separator}'.join(list_of_strings)
+
+
+class RedactingFormatter(logging.Formatter):
+    """ Redacting Formatter class
+        """
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields):
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        logging.basicConfig(level=logging.INFO)
+        string = filter_datum(
+                self.fields, self.REDACTION,
+                record.getMessage(), self.SEPARATOR
+                )
+        string.replace(self.SEPARATOR, f"{self.SEPARATOR} ")
+        record.msg = string
+        formatter = logging.Formatter(self.FORMAT)
+        log = formatter.format(record)
+        return log
