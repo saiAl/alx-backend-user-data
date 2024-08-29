@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """  0. Regex-ing """
 import os
-from typing import List, Tuple
 import re
+from typing import List, Tuple
 import logging
-import csv
 import mysql.connector
 
 
@@ -52,16 +51,18 @@ class RedactingFormatter(logging.Formatter):
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
 
-    def __init__(self, fields):
-        super(RedactingFormatter, self).__init__(self.FORMAT)
+    def __init__(self, fields: List[str]):
+        """initiate RedactingFormatter instance """
         self.fields = fields
+        super(RedactingFormatter, self).__init__(self.FORMAT)
 
     def format(self, record: logging.LogRecord) -> str:
         """Formats the LogRecord, filtering sensitive fields."""
-        message = super(RedactingFormatter, self).format(record)
-        return filter_datum(
+        record.msg = filter_datum(
                 self.fields, self.REDACTION,
-                message, self.SEPARATOR)
+                record.getMessage(), self.SEPARATOR
+                )
+        return super().format(record)
 
 
 def get_logger() -> logging.Logger:
