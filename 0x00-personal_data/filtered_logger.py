@@ -85,3 +85,28 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         password=os.getenv('PERSONAL_DATA_DB_PASSWORD')
     )
     return connector
+
+
+def main():
+    """ """
+    get_db = get_db()
+    logger = get_logger()
+
+    cursor = db.crusor()
+    cursor.execute(SELECT * FROM users)
+    rows = cursor.fetchall()
+
+    for row in rows:
+        message = (
+            "name={}; email={}; phone={}; ssn={}; "
+            "password={}; ip={}; last_login={}; user_agent={};"
+        ).format(
+            row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]
+            )
+        logger.info(message)
+    crusor.close()
+    db.close()
+
+
+if __name__ == '__main__':
+    main()
