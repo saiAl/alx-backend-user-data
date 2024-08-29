@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """  0. Regex-ing """
-from typing import List
+from typing import List, Tuple
 import re
 import logging
+import csv
+
+
+PII_FIELDS: Tuple[str] = ('name', 'email', 'phone', 'ssn', 'password')
 
 
 def filter_datum(
@@ -52,6 +56,19 @@ class RedactingFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Formats the LogRecord, filtering sensitive fields."""
-        record.msg = filter_datum(self.fields, self.REDACTION,
+        record.msg = filter_datum(
+                self.fields, self.REDACTION,
                 record.getMessage(), self.SEPARATOR)
         return super(RedactingFormatter, self).format(record)
+
+
+def get_logger() -> logging.Logger:
+    """ returns a logging.Logger object."""
+    logger = logging.getLoager("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    handler = logging.StreamHandler()
+    handler.setFormatter(RedactingFormatter(fields=PIT_FIELDS))
+    logger.addHandler(handler)
+
+    return logger
