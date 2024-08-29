@@ -58,10 +58,8 @@ class RedactingFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Formats the LogRecord, filtering sensitive fields."""
-        record.msg = filter_datum(
-                self.fields, self.REDACTION,
-                record.getMessage(), self.SEPARATOR)
-        return super(RedactingFormatter, self).format(record)
+        message = super(RedactingFormatter, self).format(record)
+        return filter_datum(self.fields, self.REDACTION, message, self.SEPARATOR)
 
 
 def get_logger() -> logging.Logger:
@@ -93,7 +91,7 @@ def main():
     logger = get_logger()
 
     cursor = db.crusor()
-    cursor.execute(SELECT * FROM users)
+    cursor.execute("SELECT * FROM users")
     rows = cursor.fetchall()
 
     for row in rows:
