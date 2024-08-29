@@ -53,12 +53,8 @@ class RedactingFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         logging.basicConfig(level=logging.INFO)
-        string = filter_datum(
+        record.msg = filter_datum(
                 self.fields, self.REDACTION,
                 record.getMessage(), self.SEPARATOR
                 )
-        string.replace(self.SEPARATOR, f"{self.SEPARATOR} ")
-        record.msg = string
-        formatter = logging.Formatter(self.FORMAT)
-        log = formatter.format(record)
-        return log
+        return super(RedactingFormatter, self).format(record)
