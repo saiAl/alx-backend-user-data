@@ -107,7 +107,7 @@ class BasicAuth(Auth):
         instance_list = User.search({"email": user_email})
         if not instance_list:
             return None
-        
+
         user = instance_list[0]
         if user.is_valid_password(user_pwd):
             return user
