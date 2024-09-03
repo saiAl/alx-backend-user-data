@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """This module provides an abstract base class
     for authentication in Flask applications.
 
