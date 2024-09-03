@@ -9,6 +9,7 @@ import binascii
 from models.user import User
 from typing import TypeVar
 
+
 class BasicAuth(Auth):
     """Basic authentication implementation.
     """
@@ -84,17 +85,30 @@ class BasicAuth(Auth):
 
     def user_object_from_credentials(
             self, user_email: str, user_pwd: str) -> TypeVar('User'):
-        """ """
+        """Retrieves a user object based on
+            email and password credentials.
+
+            Args:
+                user_email: The user's email address.
+                user_pwd: The user's password.
+
+            Returns:
+                A user object if the credentials are valid,
+                    or None if the user is not found or
+                    the password is incorrect.
+        """
+
         if user_email is None or not isinstance(user_email, str):
             return None
 
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
-        
-        instance = None
-        try:
-            instance = User.search({user_email: user_pwd})
-        except Exception:
+
+        instance = User.search({"email": user_email})
+        if not instance:
             return None
 
-        return f"{instance.first_name} {instance.last_name}"
+        if instance.is_valid_password(user_pwd):
+            return instance[0]
+
+        return None
