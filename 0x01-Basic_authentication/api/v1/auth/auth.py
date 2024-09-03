@@ -21,18 +21,22 @@ class Auth:
     """Abstract base class for authentication in Flask applications.
     """
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """Determines whether authentication is
-            required for a given path.
+        """Determines whether authentication is required for a given path.
 
-            Args:
-                path: The path to check.
-                excluded_paths: A list of paths that do not
-                    require authentication.
+        Args:
+            path: The path to check.
+            excluded_paths: A list of paths that do not require authentication.
 
-            Returns:
-                True if authentication is required, False otherwise.
+        Returns:
+        True if authentication is required, False otherwise.
+
         """
-        return False
+        if path is not None:
+            if path[-1] != '/':
+                path += '/'
+        if path is not None and path in excluded_paths:
+            return False
+        return True
 
     def authorization_header(self, request=None) -> str:
         """Extracts the authorization header from a request.
