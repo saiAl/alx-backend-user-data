@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """This module defines the `BasicAuth` class,
     which is a subclass of the `Auth`
         class from the `api.v1.auth.auth` module.
