@@ -28,7 +28,7 @@ class Auth:
             excluded_paths: A list of paths that do not require authentication.
 
         Returns:
-        True if authentication is required, False otherwise.
+            True if authentication is required, False otherwise.
 
         """
         if path is not None:
@@ -47,7 +47,9 @@ class Auth:
             Returns:
                 The authorization header value, or None if it is not present.
         """
-        return None
+        if request is None:
+            return None
+        return request.headers.get('Authorization')
 
     def current_user(self, request=None) -> TypeVar('User'):
         """Returns the current user based on
