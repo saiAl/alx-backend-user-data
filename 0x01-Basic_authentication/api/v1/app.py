@@ -16,17 +16,19 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
 auth_type = os.getenv("AUTH_TYPE")
 
+
 def factory(auth_t):
     """generate auth instances
     """
-    if auth_t == None:
+    if auth_t is None:
         return None
-    if auth_t == 'auth':
+    if auth_t is 'auth':
         return Auth()
-    if auth_t == 'basic_auth':
+    elif auth_t == 'basic_auth':
         return BasicAuth()
 
-auth = factory(auth_type)
+
+auth = Auth() # factory(auth_type) 
 
 
 @app.before_request
@@ -38,13 +40,13 @@ def handler():
             '/api/v1/status/',
             '/api/v1/unauthorized/',
             '/api/v1/forbidden/']
+
     if auth is not None:
-        if not auth.require_auth(request.path, allowed):
-            pass
-        if auth.authorization_header(request) is None:
-            abort(401)
-        if auth.current_user(request) is None:
-            abort(403)
+        if auth.require_auth(request.path, allowed):
+            if auth.authorization_header(request) is None:
+                abort(401)
+            if auth.current_user(request) is None:
+                abort(403)
 
 
 @app.errorhandler(404)
