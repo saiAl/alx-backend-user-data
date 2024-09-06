@@ -17,18 +17,10 @@ auth = None
 auth_type = os.getenv("AUTH_TYPE")
 
 
-def factory(auth_t):
-    """generate auth instances
-    """
-    if auth_t is 'auth':
-        return Auth()
-    elif auth_t == 'basic_auth':
-        return BasicAuth()
-    else:
-        return None
-
-
-auth = Auth()       # factory(auth_type)
+if auth_type == 'auth':
+    auth = Auth()       # factory(auth_type)
+if auth_type == 'basic_auth':
+    auth = BasicAuth()
 
 
 @app.before_request
