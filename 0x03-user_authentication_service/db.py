@@ -41,18 +41,35 @@ class DB:
         self._session.add(user)
         self._session.commit()
         return user
-    def find_user_by(self, **kwargs):
-        """ """
 
-        try: 
+    def find_user_by(self, **kwargs):
+        """Finds a user in the database by a given attribute.
+
+            Args:
+                **kwargs: Arbitrary keyword arguments,
+                    where the key is an attribute of the User model
+
+            Returns:
+                User: The first user that matches the given criteria.
+
+            Raises:
+                InvalidRequestError:
+                    If the required 'email' attribute
+                        is not provided in kwargs.
+                NoResultFound:
+                    If no user is found with
+                        the specified attribute.
+        """
+
+        try:
             email = kwargs['email']
         except KeyError:
             raise InvalidRequestError
 
-        users = self._session.query(User).all() # .where(User.email == email) # .where(User.email == "test@test.com")
+        users = self._session.query(User).all()
+
         for user in users:
             if user.email == email:
                 return user
         else:
             raise NoResultFound
-        # return None
