@@ -60,16 +60,19 @@ class DB:
                     If no user is found with
                         the specified attribute.
         """
-
-        try:
-            email = kwargs['email']
-        except KeyError:
-            raise InvalidRequestError
+        key, value = tuple(kwargs.items())[0]
 
         users = self._session.query(User).all()
-
         for user in users:
-            if user.email == email:
-                return user
-        else:
-            raise NoResultFound
+            try:
+                u = user if user.__getattribute__(key) == value else None
+                if u is None:
+                    raise NoResultFound
+                else:
+                    return user
+            except AttributeError:
+                raise InvalidRequestError
+
+    def update_user(self, user_id, **kwargs):
+        """ """
+        pass
