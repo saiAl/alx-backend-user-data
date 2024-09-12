@@ -49,7 +49,7 @@ def login():
         }).set_cookie("session_id", session_id)
 
 
-@app.route('/session', methods=['DELETE'])
+@app.route('/sessions', methods=['DELETE'])
 def logout():
     """ """
     session_id = request.cookies.get("session_id")
@@ -58,6 +58,17 @@ def logout():
         abort(403)
     AUTH.destroy_session(user.id)
     return redirect("/")
+
+
+@app.route("/profile", methods=['GET'], strict_slashes=False)
+def profile():
+    """ """
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user is None:
+        abort(403)
+    return jsonify({"email": user.email})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000", debug=True)
