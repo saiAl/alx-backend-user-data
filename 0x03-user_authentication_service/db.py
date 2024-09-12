@@ -34,7 +34,7 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email, hashed_password):
+    def add_user(self, email, hashed_password) -> User:
         """Add a user to the database
         """
         user = User(email=email, hashed_password=hashed_password)
@@ -42,7 +42,7 @@ class DB:
         self._session.commit()
         return user
 
-    def find_user_by(self, **kwargs):
+    def find_user_by(self, **kwargs) -> User:
         """Finds a user in the database by a given attribute.
 
             Args:
@@ -68,7 +68,7 @@ class DB:
         if user is None:
             raise NoResultFound
 
-    def update_user(self, user_id, **kwargs):
+    def update_user(self, user_id, **kwargs) -> None:
         """Update a user's attribute in the database.
         """
 
