@@ -5,6 +5,7 @@ import bcrypt
 import sqlalchemy
 from db import DB
 from user import User
+import uuid
 
 
 def _hash_password(password) -> bytes:
@@ -14,6 +15,12 @@ def _hash_password(password) -> bytes:
             password.encode('utf-8'),
             bcrypt.gensalt()
             )
+
+
+def _generate_uuid():
+    """Generate uuid
+    """
+    return str(uuid.uuid4())
 
 
 class Auth:
@@ -34,7 +41,7 @@ class Auth:
             pass
         user = self._db.add_user(email=email, hashed_password=hash_password)
         return user
-    
+
     def valid_login(self, email, password) -> bool:
         """Check the password
         """
