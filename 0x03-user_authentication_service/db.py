@@ -60,32 +60,22 @@ class DB:
                     If no user is found with
                         the specified attribute.
         """
-        key, value = tuple(kwargs.items())[0]
-
-        users = self._session.query(User).all()
-        for user in users:
-            try:
-                u = user if user.__getattribute__(key) == value else None
-                if u is None:
-                    raise NoResultFound
-                else:
-                    return user
-            except AttributeError:
+        for key in kwargs:
+            if not hasattr(User, key):
                 raise InvalidRequestError
+
+        user = self._session.query(User).where(**kwargs).first()
+        if user is None:
+            raise NoResultFound
 
     def update_user(self, user_id, **kwargs):
         """Update a user's attribute in the database.
         """
 
-        key, value = tuple(kwargs.items())[0]
         user = self.find_user_by(id=user_id)
-
-        try:
-            user.__getattribute__(key)
-        except AttributeError:
-            raise ValueError
-
-        user.__setattr__(key, value)
-        self._session.add(user)
+        for key, value in kwargs.items():
+            if not hasattr(user, key):
+                raise ValueError
+            setattr(user, key, value)
+        self._session.merge(user)
         self._session.commit()
-        return None
