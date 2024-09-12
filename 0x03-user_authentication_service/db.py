@@ -74,5 +74,18 @@ class DB:
                 raise InvalidRequestError
 
     def update_user(self, user_id, **kwargs):
-        """ """
-        pass
+        """Update a user's attribute in the database.
+        """
+
+        key, value = tuple(kwargs.items())[0]
+        user = self.find_user_by(id=user_id)
+
+        try:
+            user.__getattribute__(key)
+        except AttributeError:
+            raise ValueError
+
+        user.__setattr__(key, value)
+        self._session.add(user)
+        self._session.commit()
+        return None
