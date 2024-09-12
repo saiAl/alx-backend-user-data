@@ -30,6 +30,7 @@ def users():
         return jsonify({"message": "email already registered"}), 400
     return jsonify({"email": user.email, "message": "user created"})
 
+
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login():
     """Login endpoint
