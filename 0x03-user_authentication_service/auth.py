@@ -47,16 +47,28 @@ class Auth:
         """
         try:
             user = self._db.find_user_by(email=email)
-        except Exception:
+        except Exception as e:
             return False
         return bcrypt.checkpw(password.encode("utf-8"), user.hashed_password)
 
     def create_session(self, email):
+        """Create a new session for a user identified by their email.
+        """
         try:
             user = self._db.find_user_by(email=email)
             session_id = _generate_uuid()
             self._db.update_user(user.id, session_id=session_id)
             return session_id
+        except Exception:
+            pass
+        return None
+
+    def get_user_from_session_id(self, session_id):
+        """Retrieve a user by their session ID.
+        """
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
         except Exception:
             pass
         return None
