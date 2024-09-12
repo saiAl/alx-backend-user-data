@@ -37,7 +37,10 @@ class DB:
     def add_user(self, email, hashed_password) -> User:
         """Add a user to the database
         """
-        user = User(email=email, hashed_password=hashed_password)
+        user = User()
+        user.email = email
+        user.hashed_password
+
         self._session.add(user)
         self._session.commit()
         return user
