@@ -46,11 +46,11 @@ class DB:
         """
         for key in kwargs:
             if not hasattr(User, key):
-                raise InvalidRequestError
+                raise InvalidRequestError()
 
         user = self._session.query(User).filter_by(**kwargs).first()
         if user is None:
-            raise NoResultFound
+            raise NoResultFound()
 
         return user
 
@@ -58,10 +58,14 @@ class DB:
         """Update a user's attribute in the database.
         """
 
-        user = self.find_user_by(id=user_id)
+        try:
+            user = self.find_user_by(id=user_id)
+        except Exception:
+            raise NoResultFound()
+
         for key, value in kwargs.items():
             if not hasattr(user, key):
-                raise ValueError
+                raise ValueError()
             setattr(user, key, value)
-        self._session.merge(user)
+        # self._session.merge(user)
         self._session.commit()
