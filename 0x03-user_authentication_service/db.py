@@ -9,8 +9,7 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
 
-from user import Base
-from user import User
+from user import Base, User
 
 
 class DB:
@@ -20,7 +19,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=False)
+        self._engine = create_engine("sqlite:///a.db", echo=True)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -39,7 +38,7 @@ class DB:
         """
         user = User()
         user.email = email
-        user.hashed_password
+        user.hashed_password = hashed_password
 
         self._session.add(user)
         self._session.commit()
