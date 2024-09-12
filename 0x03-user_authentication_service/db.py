@@ -19,7 +19,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -36,31 +36,13 @@ class DB:
     def add_user(self, email, hashed_password) -> User:
         """Add a user to the database
         """
-        user = User()
-        user.email = email
-        user.hashed_password = hashed_password
-
+        user = User(email=email, hashed_password=hashed_password)
         self._session.add(user)
         self._session.commit()
         return user
 
     def find_user_by(self, **kwargs) -> User:
         """Finds a user in the database by a given attribute.
-
-            Args:
-                **kwargs: Arbitrary keyword arguments,
-                    where the key is an attribute of the User model
-
-            Returns:
-                User: The first user that matches the given criteria.
-
-            Raises:
-                InvalidRequestError:
-                    If the required 'email' attribute
-                        is not provided in kwargs.
-                NoResultFound:
-                    If no user is found with
-                        the specified attribute.
         """
         for key in kwargs:
             if not hasattr(User, key):
