@@ -5,7 +5,7 @@ import bcrypt
 from db import DB
 
 
-def _hash_password(password):
+def _hash_password(password) -> bytes:
     """Hash a password using bcrypt.
     """
     return bcrypt.hashpw(
