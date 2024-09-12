@@ -2,9 +2,9 @@
 """Module for password hashing.
 """
 import bcrypt
+import sqlalchemy
 from db import DB
 from user import User
-import sqlalchemy
 
 
 def _hash_password(password) -> bytes:
@@ -34,3 +34,12 @@ class Auth:
             pass
         user = self._db.add_user(email=email, hashed_password=hash_password)
         return user
+    
+    def valid_login(self, email, password) -> bool:
+        """Check the password
+        """
+        try:
+            user = self._db.find_user_by(email=email)
+        except Exception:
+            return False
+        return bcrypt.checkpw(password.encode("utf-8"), user.hashed_password)
